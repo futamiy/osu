@@ -19,6 +19,8 @@ namespace osu.Game.Screens.Play
 
         private SkinnableSound comboBreakSample;
 
+        private int comboBrushCap;
+
         private Bindable<bool> alwaysPlayFirst;
 
         private double? firstBreakTime;
@@ -32,6 +34,10 @@ namespace osu.Game.Screens.Play
         private void load(OsuConfigManager config)
         {
             InternalChild = comboBreakSample = new SkinnableSound(new SampleInfo("Gameplay/combobreak"));
+
+            // Change default cap instead 20
+            comboBrushCap = skin.GetConfig<OsuSkinConfiguration, int>(OsuSkinConfiguration.ComboBrushCap)?.Value ?? 20;
+            comboBrushCap = (comboBrushCap < 10) ? 10 : comboBrushCap;
             alwaysPlayFirst = config.GetBindable<bool>(OsuSetting.AlwaysPlayFirstComboBreak);
         }
 
@@ -56,7 +62,7 @@ namespace osu.Game.Screens.Play
             if (gameplayClock.IsRewinding)
                 return;
 
-            if (combo.NewValue == 0 && (combo.OldValue > 20 || (alwaysPlayFirst.Value && firstBreakTime == null)))
+            if (combo.NewValue == 0 && (combo.OldValue > comboBrushCap || (alwaysPlayFirst.Value && firstBreakTime == null)))
             {
                 firstBreakTime = gameplayClock.CurrentTime;
 
