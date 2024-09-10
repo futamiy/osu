@@ -13,6 +13,7 @@ namespace osu.Game.Rulesets.Osu.Skinning
 
         // ReSharper disable once IdentifierTypo
         HitCircleOverlayAboveNumer, // Some old skins will have this typo
+        ComboBrushLooping,
         SpinnerFrequencyModulate,
         SpinnerNoBlink
     }

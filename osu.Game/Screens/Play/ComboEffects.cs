@@ -19,6 +19,10 @@ namespace osu.Game.Screens.Play
 
         private SkinnableSound comboBreakSample;
 
+        private SkinnableSound comboBrushSample;
+
+        private int comboBrushLooping;
+
         private Bindable<bool> alwaysPlayFirst;
 
         private double? firstBreakTime;
@@ -33,6 +37,10 @@ namespace osu.Game.Screens.Play
         {
             InternalChild = comboBreakSample = new SkinnableSound(new SampleInfo("Gameplay/combobreak"));
             alwaysPlayFirst = config.GetBindable<bool>(OsuSetting.AlwaysPlayFirstComboBreak);
+            InternalChild = comboBrushSample = new SkinnableSound(new SampleInfo("Gameplay/combobrush"));
+            // This setting base by
+            // 0: Default, 1: Taiko Like (restart back to 1 if break, no sound if maximum), 2 (like 1, but using last brush for next), 3: Random
+            comboBrushLooping = skin.GetConfig<OsuSkinConfiguration, int>(OsuSkinConfiguration.comboBrushLooping)?.Value ?? 0;
         }
 
         protected override void LoadComplete()
@@ -66,6 +74,18 @@ namespace osu.Game.Screens.Play
                     return;
 
                 comboBreakSample?.Play();
+            }
+
+            if (combo.NewValue != 0 && combo.OldValue > 19) {
+                // int comboOldCycle = combo.OldValue % 20
+                int comboNewCycle = combo.NewValue % 20
+
+                if (comboNewCycle == 0) {
+                    if (samplePlaybackDisabler?.SamplePlaybackDisabled.Value == true)
+                    return;
+
+                    comboBrushSample?.Play();
+                }
             }
         }
     }
